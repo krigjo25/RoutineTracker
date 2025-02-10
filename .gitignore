@@ -1,0 +1,10 @@
+
+#  Ignoring Folders
+.venv/
+.vscode/
+__pycache__/
+flask_session/
+VueClient/node_modules
+
+# Ignoring Files
+.env
