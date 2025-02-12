@@ -1,17 +1,31 @@
 #   Flask Cookies
-from flask import request
-class Cookies(object):
+from flask.views import MethodView
+from flask import request, render_template, make_response
+
+from lib.config.logger import CookieWatcher
+
+class Cookies(MethodView):
 
     def __init__(self):
-        self.Click = request.cookies.get("Clicks")
+        self.cookie = CookieWatcher()
+        self.cookie.setup("Cookie.log")
 
     def get(self):
-        response = {}
-        ckicks = ""
 
-        if request.cookies.get("Clicks"):
-            self.click = request.cookies.get("Clicks")
+        click = None
+        if request.cookies.get("Click(s)"):
+            click = request.cookies.get("Click(s))")
+            self.cookie.log.info(f"Click(s): {click}")
+        
+        if not click:
+            click = 0
+        return render_template("index.html", count= int(click))
+    
+    def post(self):
 
-        response["Clicks"] = self.click
+        click = request.cookies.get("Click(s)")
+        resp = make_response(render_template("index.html"))
+        resp.set_cookie("Click(s)", f"{int(click) + 1}")
+        self.cookie.log.info(f"Click(s): {click}")
 
-        return response
+        return resp

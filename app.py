@@ -6,8 +6,10 @@ from flask_cors import CORS
 from flask_session import Session
 
 #   Custom modules
-from lib.config.config import DevelopmentConfig, ProdConfig
 from lib.config.logger import AppWatcher
+from lib.endpoints.cookies import Cookies
+from lib.config.config import DevelopmentConfig, ProdConfig
+
 #   Initializing the Flask application
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
@@ -16,21 +18,20 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 Session(app)
 
 log = AppWatcher()
-@app.after_request
-async def after_request(response):
 
-    
-    response.headers['clicks'] = 0
+@app.after_request
+def after_request(response):
+
+
     response.headers['Expires'] = 0
-    response.headers['Pragma'] = "no-cache"
-    response.headers['Cache-Control'] = "no-cache, no-store, must-revalidate"
+    response.headers['Pragma'] = "cache"
+    response.headers['Cache-Control'] = "no-cache, store, must-revalidate"
     
     #  Log the request
-    log.log.info("Request has been made")
-    
     return response
 
 #   Endpoints
+app.add_url_rule('/', view_func=Cookies().as_view(name ='index.html'))
 
 #   Log the application is running
 log.log.info("App is running")

@@ -13,15 +13,16 @@ class LogWatcher(object):
         #   Initializing the file handler
         file_handler = Log.FileHandler(name)
         file_handler.setLevel(Log.DEBUG)
+        file_handler.setLevel(Log.ERROR)
 
         #   Initializing the console handler
         console_handler = Log.StreamHandler()
         console_handler.setLevel(Log.INFO)
 
         #   Initializing the formatter
-        formatter = Log.Formatter('%(asctime)s:%(name)s:%(message)s')
+        formatter = Log.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-        file_handler.setFormatter(formatter)
+        #file_handler.setFormatter(formatter)
         console_handler.setFormatter(formatter)
 
         #   Adding the handlers to the logger -- issues below
@@ -34,9 +35,14 @@ class LogWatcher(object):
 class AppWatcher(LogWatcher):
 
     def __init__(self):
+        super().__init__()
+
         self.name = "app.log"
 
-        self.setup(self.name)
+class CookieWatcher(LogWatcher):
+
+    def __init__(self):
+        super().__init__()
 
         
         

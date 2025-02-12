@@ -5,6 +5,6 @@
 __pycache__/
 flask_session/
 VueClient/node_modules
-.log
+*.log
 # Ignoring Files
 .env
