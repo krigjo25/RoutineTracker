@@ -17,7 +17,9 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 
 Session(app)
 
-log = AppWatcher()
+#   Initialize the logger
+logger = AppWatcher()
+logger.FileHandler()
 
 @app.after_request
 def after_request(response):
@@ -31,10 +33,7 @@ def after_request(response):
     return response
 
 #   Endpoints
-app.add_url_rule('/', view_func=Cookies().as_view(name ='index.html'))
-
-#   Log the application is running
-log.log.info("App is running")
+app.add_url_rule('/', view_func=Cookies().as_view('cookies', methods=['GET', 'POST']))
 
 #   Run the application
 if __name__ == '__main__':
