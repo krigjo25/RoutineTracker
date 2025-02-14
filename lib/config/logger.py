@@ -79,7 +79,7 @@ class Logger(object):
             self.handler = True
 
         else:
-            self.log.warning(f"{self.name} Console handler already added.")
+            self.log.warning(f"{self.name} Console handler already initialized")
 
     def info(self, message):
         self.log.info(message)
