@@ -4,11 +4,14 @@ from flask import request, jsonify, make_response, render_template
 
 from lib.config.logger import CookieWatcher
 
+#   Initialize the logger
+logger = CookieWatcher()
+logger.ConsoleHandler()
+
 class Cookies(MethodView):
 
     def __init__(self, *args, **kwargs):
-        self.logger = CookieWatcher()
-        self.logger.ConsoleHandler()
+        self.logger = logger
 
     def get(self):
         clicks = 0
@@ -17,8 +20,11 @@ class Cookies(MethodView):
         if request.cookies.get(cookie_name):
             clicks = int(request.cookies.get(cookie_name))
 
+            self.logger.info(f"Cookie found: {clicks}")
+            return self.defineCookie(cookie_name, clicks)
+        self.logger.warn("Cookies not found", request.cookies)
+        return render_template("index.html", count=clicks)
 
-        return self.defineCookie(cookie_name, clicks)
     
     def post(self):
 
@@ -27,14 +33,8 @@ class Cookies(MethodView):
 
         if request.cookies.get(name):
             click = int(request.cookies.get(name)) + 1
-        
+
             return self.defineCookie(name, click)
-
-        if request.headers.get("reset"):
-
-            self.deleteCookies(name)
-            return render_template("index.html", count=click)
-
         else:
             return render_template("index.html", count=click)
 
@@ -42,6 +42,8 @@ class Cookies(MethodView):
 
         resp = make_response(render_template("index.html", count=click))
         resp.set_cookie(name,  str(click))
+
+        self.logger.info(f"Cookie set: {resp}")
         return resp
     
     def deleteCookies(self, name):

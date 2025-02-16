@@ -1,4 +1,4 @@
-#   Python's logger module is used to log messages to the console and to a file.
+#  Handling the application logging
 
 #   Importing required dependencies
 import logging as Log
@@ -25,7 +25,9 @@ class Logger(object):
         self.log = Log.getLogger(f"{self.name}")
         self.log.setLevel(Log.DEBUG)
         
-        self.handler = False
+        #   Initialize the Flags
+        self.file_handler = False
+        self.console_handler = False
 
     def SetupHandler(self, handler:Union[Log.FileHandler | Log.StreamHandler]):
         
@@ -44,21 +46,19 @@ class Logger(object):
         """
             *   Add a console handler to the logger
         """
+        
         #   Ensure that the Flag is not set to True
-        if not self.handler:
-
+        if not self.console_handler:
+            
+            #   Set the flag
+            self.console_handler = True
+            
             #   Initializing the handler
             handler = Log.StreamHandler()
             self.SetupHandler(handler)
 
             #   Send message to the console
             self.log.info(f"{self.name} has been initialized.")
-            
-            #   Set the flag
-            self.handler = True
-
-        else:
-            self.log.warning(f"{self.name} Console handler already added.")
 
     def FileHandler(self):
 
@@ -66,7 +66,7 @@ class Logger(object):
             *   Add a file handler to the logger
         """
         #   Ensure that the Flag is not set to True
-        if not self.handler:
+        if not self.file_handler:
 
             #   Initializing the handler
             handler = Log.FileHandler(f"{self.name}.log")
@@ -76,7 +76,7 @@ class Logger(object):
             self.log.info(f"{self.name} has been initialized.")
             
             #   Set the flag
-            self.handler = True
+            self.file_handler = True
 
         else:
             self.log.warning(f"{self.name} Console handler already initialized")
@@ -87,7 +87,7 @@ class Logger(object):
     def error(self, message):
         self.log.error(message)
     
-    def warning(self, message):
+    def warn(self, message):
         self.log.warning(message)
     
     def debug(self, message):
