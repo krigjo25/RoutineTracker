@@ -16,14 +16,18 @@ class Cookies(MethodView):
     def get(self):
         clicks = 0
         cookie_name = "Count"
-
+        response = {}
+    
         if request.cookies.get(cookie_name):
             clicks = int(request.cookies.get(cookie_name))
 
             self.logger.info(f"Cookie found: {clicks}")
+
             return self.defineCookie(cookie_name, clicks)
-        self.logger.warn("Cookies not found", request.cookies)
-        return render_template("index.html", count=clicks)
+
+        
+        self.logger.warn(f"Cookies not found {request.cookies}")
+        return jsonify({"message": "Cookies not found"})
 
     
     def post(self):
@@ -40,7 +44,11 @@ class Cookies(MethodView):
 
     def defineCookie(self, name, click):
 
-        resp = make_response(render_template("index.html", count=click))
+        response = {}
+        response["message"] = "Cookie set"
+        response["status"] = "200"
+        response["count"] = click
+        resp = make_response(jsonify(response))
         resp.set_cookie(name,  str(click))
 
         self.logger.info(f"Cookie set: {resp}")
