@@ -1,7 +1,8 @@
 #  Handling the application logging
 #   Based Basic Python logging concepts by  https://last9.io/blog/python-logging-best-practices/#basic-python-logging-concepts
 #   Importing required dependencies
-import logging as Log
+import sys,logging as Log
+
 from typing import Optional, Union
 
 class Logger(object):
@@ -40,6 +41,27 @@ class Logger(object):
         handler.setFormatter(formatter)
         self.log.addHandler(handler)
     
+    def StdoutHandler(self):
+        
+        """
+            *   Add a stdout handler to the logger
+        """
+        
+        #   Ensure that the Flag is not set to True
+        if not self.console_handler:
+            
+            #   Set the flag
+            self.console_handler = True
+            
+            #   Initializing the handler
+            handler = Log.StreamHandler(sys.stdout)
+            handler.setLevel(Log.DEBUG)
+            
+            self.SetupHandler(handler)
+
+            #   Send message to the console
+            self.log.info(f"{self.name} has been initialized.")
+
     def ConsoleHandler(self):
 
 

@@ -6,7 +6,7 @@ from lib.config.logger import CookieWatcher
 
 #   Initialize the logger
 logger = CookieWatcher()
-logger.ConsoleHandler()
+logger.FileHandler()
 
 class Cookies(MethodView):
 
@@ -14,35 +14,41 @@ class Cookies(MethodView):
         self.logger = logger
 
     def get(self):
-        clicks = 0
+        cookie_clicks = 0
         cookie_name = "Count"
-        response = {}
     
         if request.cookies.get(cookie_name):
-            clicks = int(request.cookies.get(cookie_name))
+            cookie_clicks = int(request.cookies.get(cookie_name))
 
-            self.logger.info(f"Cookie found: {clicks}")
-
-            return self.defineCookie(cookie_name, clicks)
+            self.logger.info(f"Cookie found: {cookie_clicks}")
+            return self.defineCookie(cookie_name, cookie_clicks)
 
         
         self.logger.warn(f"Cookies not found {request.cookies}")
-        return jsonify({"message": "Cookies not found"})
+
+
+        return self.defineCookie(cookie_name, cookie_clicks)
 
     
     def post(self):
 
-        click = 0
-        name = "Count"
+        data = request.get_json()
 
-        if request.cookies.get(name):
-            click = int(request.cookies.get(name)) + 1
+        for key, value in data.items():
+            print(key, value)
+        
+        for key, value in data.items():
 
-            return self.defineCookie(name, click)
-        else:
-            return render_template("index.html", count=click)
+            self.logger.info(f"Json requested: {key} : {value}")
 
-    def defineCookie(self, name, click):
+            if request.cookies.get(key):
+                click = int(value) + 1
+
+                self.logger.info(f"Coo: {click}")
+
+                return self.defineCookie(key, click)
+
+    def defineCookie(self, name, click:int):
 
         response = {}
         response["message"] = "Cookie set"
