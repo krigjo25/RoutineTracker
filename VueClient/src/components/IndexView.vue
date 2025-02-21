@@ -3,7 +3,7 @@
 
       <h1>Score: <span id="score">{{ count }}</span></h1>
         <form>
-            <button @click="updateClicks" >Click me to increase score</button>
+            <button @click="updateClicks">Click me to increase score</button>
             <button type="reset">Reset Button</button>
         </form>
   </div>
@@ -30,7 +30,7 @@ const Response = async () =>
 async function updateClicks()
   {
     const path = "http://localhost:5000/"
-    await axios.post(path, {"Count": count.value}).then(
+    await axios.post(path, {"count": count.value += 1}).then(
       (response) => 
     {
       Response()

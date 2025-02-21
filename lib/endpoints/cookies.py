@@ -1,8 +1,7 @@
 #   Flask Cookies
 from flask.views import MethodView
-from flask import request, jsonify, make_response, render_template
-
 from lib.config.logger import CookieWatcher
+from flask import request, jsonify, make_response, render_template
 
 #   Initialize the logger
 logger = CookieWatcher()
@@ -15,8 +14,8 @@ class Cookies(MethodView):
 
     def get(self):
         cookie_clicks = 0
-        cookie_name = "Count"
-    
+        cookie_name = "count"
+
         if request.cookies.get(cookie_name):
             cookie_clicks = int(request.cookies.get(cookie_name))
 
@@ -29,38 +28,27 @@ class Cookies(MethodView):
 
         return self.defineCookie(cookie_name, cookie_clicks)
 
-    
     def post(self):
 
+        click = 0
         data = request.get_json()
 
         for key, value in data.items():
             print(key, value)
-        
-        for key, value in data.items():
 
-            self.logger.info(f"Json requested: {key} : {value}")
+        self.logger.info(request.cookies.get("count"))
 
-            if request.cookies.get(key):
-                click = int(value) + 1
+        return self.defineCookie(key, str(click))
 
-                self.logger.info(f"Coo: {click}")
-
-                return self.defineCookie(key, click)
-
-    def defineCookie(self, name, click:int):
+    def defineCookie(self, name, click):
 
         response = {}
-        response["message"] = "Cookie set"
         response["status"] = "200"
         response["count"] = click
+        response["message"] = "Cookie set"
+
         resp = make_response(jsonify(response))
         resp.set_cookie(name,  str(click))
 
-        self.logger.info(f"Cookie set: {resp}")
-        return resp
-    
-    def deleteCookies(self, name):
-        resp = make_response(render_template("index.html", count=0))
-        resp.set_cookie(name, 0)
+        self.logger.info(f"Cookie set: {name} : {click}")
         return resp
