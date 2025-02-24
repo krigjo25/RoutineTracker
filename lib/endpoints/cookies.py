@@ -12,43 +12,25 @@ class Cookies(MethodView):
     def __init__(self, *args, **kwargs):
         self.logger = logger
 
+
     def get(self):
-        cookie_clicks = 0
-        cookie_name = "count"
-
-        if request.cookies.get(cookie_name):
-            cookie_clicks = int(request.cookies.get(cookie_name))
-
-            self.logger.info(f"Cookie found: {cookie_clicks}")
-            return self.defineCookie(cookie_name, cookie_clicks)
-
+        if request.cookies.get("Click(s)"):
+            click = str(request.cookies.get("Click(s))")) if request.cookies.get("Click(s)") else 0
         
-        self.logger.warn(f"Cookies not found {request.cookies}")
-
-
-        return self.defineCookie(cookie_name, cookie_clicks)
-
+        if click is None:
+            click = 0
+        
+        self.logger.info(f"Click(s): {click}")
+        
+        if not click:
+            click = 0
+        return jsonify("clicks", click)
+    
     def post(self):
 
-        click = 0
-        data = request.get_json()
+        click = request.cookies.get("Click(s)")
+        resp = make_response()
+        resp.set_cookie("Click(s)", f"{click}")
+        self.logger.log.info(f"cookie: {click}")
 
-        for key, value in data.items():
-            print(key, value)
-
-        self.logger.info(request.cookies.get("count"))
-
-        return self.defineCookie(key, str(click))
-
-    def defineCookie(self, name, click):
-
-        response = {}
-        response["status"] = "200"
-        response["count"] = click
-        response["message"] = "Cookie set"
-
-        resp = make_response(jsonify(response))
-        resp.set_cookie(name,  str(click))
-
-        self.logger.info(f"Cookie set: {name} : {click}")
-        return resp
+        return make_response(jsonify({'clicks': click}), 200)

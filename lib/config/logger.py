@@ -101,7 +101,7 @@ class Logger(object):
             self.file_handler = True
 
         else:
-            self.log.warning(f"{self.name} Console handler already initialized")
+            self.log.warning(f"{self.name} Console handler already added.")
 
     def info(self, message):
         self.log.info(message)
