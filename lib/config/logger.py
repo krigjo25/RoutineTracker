@@ -1,5 +1,5 @@
 #  Handling the application logging
-#   Based Basic Python logging concepts by  https://last9.io/blog/python-logging-best-practices/#basic-python-logging-concepts
+
 #   Importing required dependencies
 import sys,logging as Log
 
