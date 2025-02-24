@@ -14,23 +14,21 @@ class Cookies(MethodView):
 
 
     def get(self):
-        if request.cookies.get("Click(s)"):
-            click = str(request.cookies.get("Click(s))")) if request.cookies.get("Click(s)") else 0
-        
-        if click is None:
-            click = 0
-        
+
+        click = str(request.cookies.get("Click(s))")) if request.cookies.get("Click(s)") else 0
+
+        self.logger.warn(request.headers)
         self.logger.info(f"Click(s): {click}")
-        
-        if not click:
-            click = 0
-        return jsonify("clicks", click)
+        return render_template("index.html", click= click)
     
     def post(self):
 
         click = request.cookies.get("Click(s)")
         resp = make_response()
         resp.set_cookie("Click(s)", f"{click}")
-        self.logger.log.info(f"cookie: {click}")
+        
+        self.logger.warn(request.headers)
+        self.logger.info(f"Click(s): {click}")
 
-        return make_response(jsonify({'clicks': click}), 200)
+
+        return make_response(render_template('index.html',click = click), 200)
