@@ -11,24 +11,48 @@ class Cookies(MethodView):
 
     def __init__(self, *args, **kwargs):
         self.logger = logger
-
+        self.cookie_name = "Click"
 
     def get(self):
 
-        click = str(request.cookies.get("Click(s))")) if request.cookies.get("Click(s)") else 0
 
-        self.logger.warn(request.headers)
-        self.logger.info(f"Click(s): {click}")
-        return render_template("index.html", click= click)
-    
+        if request.cookies.get(self.cookie_name):
+
+            response = {}
+            response['status'] = 200
+            response["count"] = int(request.cookies.get(self.cookie_name))
+
+            self.logger.info(f"Server response: {response}")
+
+            return jsonify(response)
+
+        else:
+            self.logger.warn(f"Cookies not found, Initializing cookies.")
+
+            click = 0
+            return self.SetCookie(click)
+
     def post(self):
 
-        click = request.cookies.get("Click(s)")
-        resp = make_response()
-        resp.set_cookie("Click(s)", f"{click}")
+        response = {}
+
+        if request.cookies.get(self.cookie_name):
+
+            response['status'] = 200
+            response[self.cookie_name] = int(request.cookies.get(self.cookie_name)) + 1
         
-        self.logger.warn(request.headers)
-        self.logger.info(f"Click(s): {click}")
+            self.logger.info(f"Updating cookies: {response['status']}")
+            return self.SetCookie(response)
+            
+        response['error'] = "Cookies not found"
+        response['status'] = 404
+        self.logger.info(f"Cookies not found: {response}")
 
+        return jsonify(response)
+    
+    def SetCookie(self, response):
 
-        return make_response(render_template('index.html',click = click), 200)
+        #   Set the cookie
+        resp = make_response(jsonify(response))
+        resp.set_cookie(self.cookie_name, str(response[self.cookie_name]))
+        return resp
