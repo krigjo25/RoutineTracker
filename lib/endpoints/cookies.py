@@ -1,7 +1,7 @@
 #   Flask Cookies
 from flask.views import MethodView
 from lib.config.logger import CookieWatcher
-from flask import request, jsonify, make_response, render_template
+from flask import request, jsonify, make_response
 
 #   Initialize the logger
 logger = CookieWatcher()
@@ -14,7 +14,6 @@ class Cookies(MethodView):
         self.cookie_name = "Click"
 
     def get(self):
-
 
         if request.cookies.get(self.cookie_name):
 
