@@ -4,8 +4,28 @@
 .vscode/
 __pycache__/
 flask_session/
+/cypress/videos/
+/cypress/screenshots/
+
+# Modules
 VueClient/node_modules
+.DS_Store
+dist
+dist-ssr
+coverage
+*.local
 
 # Ignoring Files
+
+
+# Editor directories and files
+!.vscode/extensions.json
+.idea
+*.suo
+*.sln
+*.sw?
 *.env
 *.log
+*.ntvs*
+*.njsproj
+*.tsbuildinfo
