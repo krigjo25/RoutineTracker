@@ -15,11 +15,11 @@ class Cookies(MethodView):
 
     def get(self):
 
+        response = {}
+        response['status'] = 200
         if request.cookies.get(self.cookie_name):
 
-            response = {}
-            response['status'] = 200
-            response["count"] = int(request.cookies.get(self.cookie_name))
+            response[self.cookie_name] = int(request.cookies.get(self.cookie_name))
 
             self.logger.info(f"Server response: {response}")
 
@@ -28,8 +28,8 @@ class Cookies(MethodView):
         else:
             self.logger.warn(f"Cookies not found, Initializing cookies.")
 
-            click = 0
-            return self.SetCookie(click)
+            response[self.cookie_name] = 0
+            return self.SetCookie(response)
 
     def post(self):
 
@@ -43,8 +43,9 @@ class Cookies(MethodView):
             self.logger.info(f"Updating cookies: {response['status']}")
             return self.SetCookie(response)
             
-        response['error'] = "Cookies not found"
         response['status'] = 404
+        response['error'] = "Cookies not found"
+        
         self.logger.info(f"Cookies not found: {response}")
 
         return jsonify(response)
